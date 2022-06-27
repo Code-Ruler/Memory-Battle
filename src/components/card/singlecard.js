@@ -13,7 +13,7 @@ function Singlecard({ card, choice, toFlip, todisable}) {
         <div className='card'>
             <div className={flipped ? 'flipped' : ""}>
                 <img className='front' src={card.src} alt="Front of Card" />
-                <img className='back' src="/img/pexels-kseniya-lapteva-9176064.jpg" alt="Back  of card" onClick={choiceUpdate} />
+                <img className='back' src="/img/photo-1518715058720-e56f02e77fe5.jpeg" alt="Back  of card" onClick={choiceUpdate} />
             </div>
 
         </div>

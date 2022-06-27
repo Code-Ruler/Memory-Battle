@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Singlecard from './components/card/singlecard'
 import FormDetails from './components/card/form'
 import './App.css';
+import axios from 'axios';
 
 
 
@@ -15,7 +16,7 @@ function App() {
   const [choiceSecond, setChoiceSecond] = useState(null)
   const [disable, setDisable] = useState(false)
   const [type, setType] = useState("Type of Image...")
-  const [noOfBox, setNoOfBox] = useState(0);
+  const [noOfBox, setNoOfBox] = useState(12);
 
   const choice = (card) => {
     // console.log(card)
@@ -72,7 +73,7 @@ function App() {
 
   const shufflingOfCards = () => {
 
-    handleSubmit()
+    fetchImages()
     const cards = [...cardImages, ...cardImages]
     cards.sort(() => Math.random() - 0.5)
     const updatedCards = cards.map(card => ({
@@ -85,7 +86,7 @@ function App() {
     setTurns(0)
   }
 
-  console.log(cards)
+  // console.log(cards)
   // shufflingOfCards()
   // console.log(cards)
 
@@ -102,41 +103,27 @@ function App() {
 
   }
 
-  function handleSubmit() {
-    // event.preventDefault();
-    const url1 = new URL('https://api.pexels.com/v1/search')
+  const page = Math.round(Math.random() * (10 - 1) + 1)
+  const client_id = "5pl49YCrmwK67iAtAH1zziL7BmRpBvL1zs6Kk9Xt7Xk";
+  const fetchUrl = `https://api.unsplash.com/search/photos?client_id=${client_id}&query=${type}&page=${page}&per_page=${noOfBox / 2}&orientation=squarish`;
 
-    url1.search = new URLSearchParams({
-      query: type,
-      orientation: 'square',
-      size: 'small',
-      per_page: noOfBox,
-      page: Math.round(Math.random() * (10-1)+1),
-    })
-
-    fetch(url1, {
-      method: "GET",
-      // mode: 'no-cors',
-      headers: {
-        Authorization: process.env.REACT_APP_AUTH_KEY,
-      }
-    })
-      .then((res) =>
-        // console.log(res)
-        res.json()
-      )
-      .then(data => {
-
-        console.log(data.photos)
-
+  const fetchImages = () => {
+    axios
+      .get(fetchUrl, {
+        headers: {},
+      })
+      .then((response) => {
+        const data = response.data.results
         const getImage = photo => {
-          return { "src": photo.src.original, match: false }
+          return { "src": photo.urls.raw, match: false }
         }
-        const images = data.photos.map(getImage)
+        const images = data.map(getImage)
         setCardImages(images)
       })
-
-  }
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div className="App">
